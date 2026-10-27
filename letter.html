@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M.Sc. Physics Letter Generator - Government Arts College</title>
+<link rel="stylesheet" href="letter.css">
+</head>
+<body>
+<noscript>This letter generator needs JavaScript enabled to work.</noscript>
+
+<!-- Static institutional header & footer (original markup; cloned onto each page, never edited by form fields) -->
+<template id="tpl-header">
+  <header class="header">
+    <div class="dept">
+      <span class="letter-p">P</span>
+      <div class="dept-text">DEPARTMENT OF<br><span class="physics">PHYSICS</span></div>
+    </div>
+    <img class="emblem" src="Gacnlogo.jpg" alt="Government Arts College emblem">
+    <div class="college">
+      <div class="college-name">GOVERNMENT ARTS COLLEGE</div>
+      <div class="autonomous">(Autonomous)</div>
+      <div class="college-address">Anna Salai, Nandanam, Chennai - 35</div>
+    </div>
+  </header>
+</template>
+<template id="tpl-footer">
+  <footer class="footer">
+    <div class="footer-name">GOVERNMENT ARTS COLLEGE</div>
+    <div class="footer-sub">(Autonomous &#8211; NAAC Accredited - Affiliated to University of Madras)</div>
+    <div class="footer-details">Nandanam, Chennai &#8211; 600 035, Tamil Nadu, India.</div>
+    <div class="footer-details">Phone No.: 044 &#8211; 24351048 &nbsp;&nbsp; Fax No.: 044 &#8211; 24310589</div>
+    <div class="footer-details">Website: <a class="site" href="https://www.gacn.edu.in">www.gacn.edu.in</a> &nbsp;&nbsp; Email Id: gacatchn35@yahoo.co.in</div>
+  </footer>
+</template>
+
+<div class="topbar">
+  <div class="brand">Official Letter Generator<small>M.Sc. Physics &#183; A4 portrait</small></div>
+  <div class="status ok" id="status" role="status" aria-live="polite">Fits on one A4 page</div>
+  <div class="actions">
+    <button type="button" id="btn-mode">Preview mode</button>
+    <button type="button" id="btn-clear">Clear letter</button>
+    <button type="button" id="btn-reset">Reset letter</button>
+    <button type="button" id="btn-print" class="primary">Print / Save as PDF</button>
+  </div>
+</div>
+
+<div class="layout">
+  <aside class="panel" id="panel" aria-label="Letter editing dashboard">
+
+    <details open>
+      <summary>Date and heading</summary>
+      <div class="sec">
+        <div class="field">
+          <label for="f-date">Date</label>
+          <div class="inline">
+            <input type="date" id="f-date" data-k="date">
+            <button type="button" class="small" id="btn-today">Today</button>
+          </div>
+        </div>
+        <label class="chk"><input type="checkbox" data-k="headingOn"> Show letter heading</label>
+        <div class="field">
+          <label for="f-heading">Letter heading</label>
+          <input type="text" id="f-heading" data-k="heading" placeholder="e.g. PROJECT RECOMMENDATION LETTER" list="heading-list" autocomplete="off">
+          <datalist id="heading-list">
+            <option value="PROJECT RECOMMENDATION LETTER"></option>
+            <option value="REQUEST FOR PROJECT TRAINING"></option>
+            <option value="REQUEST FOR RESEARCH INTERNSHIP"></option>
+            <option value="OFFICIAL REQUEST LETTER"></option>
+            <option value="REQUEST FOR M.Sc. PROJECT WORK"></option>
+          </datalist>
+        </div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>Recipient address</summary>
+      <div class="sec">
+        <div class="field"><label for="f-desig">Designation</label><input type="text" id="f-desig" data-k="rDesig" placeholder="e.g. The Director"></div>
+        <div class="field"><label for="f-rname">Recipient name (optional)</label><input type="text" id="f-rname" data-k="rName" placeholder="e.g. Dr. A. Kumar"></div>
+        <div class="field"><label for="f-inst">Institution or organisation</label><input type="text" id="f-inst" data-k="rInst" placeholder="Institution or organisation"></div>
+        <div class="field"><label for="f-dept">Department or division (optional)</label><input type="text" id="f-dept" data-k="rDept" placeholder="e.g. Department of Physics"></div>
+        <div class="field"><label for="f-street">Street or campus address</label><input type="text" id="f-street" data-k="rStreet" placeholder="Street or campus address"></div>
+        <div class="field"><label for="f-city">City, state and PIN code (optional)</label><input type="text" id="f-city" data-k="rCity" placeholder="City, state - PIN code"></div>
+        <p class="hint">Empty fields are skipped. If every field is empty, the &#8220;To&#8221; block is removed.</p>
+      </div>
+    </details>
+
+    <details open>
+      <summary>Subject and salutation</summary>
+      <div class="sec">
+        <div class="row">
+          <div class="field"><label for="f-sublabel">Subject label</label><input type="text" id="f-sublabel" data-k="subLabel" placeholder="e.g. Sub:"></div>
+          <div class="field">
+            <label for="f-subpos">Subject placement</label>
+            <select id="f-subpos" data-k="subPos">
+              <option value="after">After salutation</option>
+              <option value="before">Before salutation</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label for="f-subject">Subject</label><textarea id="f-subject" data-k="subject" rows="3" placeholder="Subject of the letter"></textarea></div>
+        <label class="chk"><input type="checkbox" data-k="subUnderline"> Underline subject</label>
+        <label class="chk"><input type="checkbox" data-k="salOn"> Show salutation</label>
+        <div class="field"><label for="f-sal">Salutation</label><input type="text" id="f-sal" data-k="salutation" placeholder="e.g. Dear Sir/Madam,"></div>
+      </div>
+    </details>
+
+    <details open>
+      <summary>Body</summary>
+      <div class="sec">
+        <div class="field">
+          <label for="f-body">Letter body</label>
+          <div class="fmtbar" role="toolbar" aria-label="Text formatting">
+            <button type="button" class="small" id="fmt-b" title="Bold (Ctrl+B)" aria-label="Bold"><b>B</b></button>
+            <button type="button" class="small" id="fmt-i" title="Italic (Ctrl+I)" aria-label="Italic"><i>I</i></button>
+            <span class="hint">Select text, then press B or I</span>
+          </div>
+          <textarea id="f-body" data-k="body" rows="12" placeholder="Type the letter body here. Each new line starts a new paragraph."></textarea>
+        </div>
+        <p class="hint">Each line break starts a new paragraph; a blank line adds a gap. Bold is **text**, italic is *text*, both is ***text***.</p>
+        <p class="warnbox warn" id="body-warn" hidden></p>
+        <div class="row">
+          <div class="field"><label for="f-size">Font size: <span id="o-size"></span></label><input type="range" id="f-size" data-k="bodySize" min="10" max="14" step="0.1"></div>
+          <div class="field"><label for="f-lh">Line spacing: <span id="o-lh"></span></label><input type="range" id="f-lh" data-k="bodyLH" min="1.2" max="2" step="0.02"></div>
+        </div>
+        <label class="chk"><input type="checkbox" data-k="indent"> Indent first line of each paragraph</label>
+        <label class="chk"><input type="checkbox" data-k="repeatHeader"> Repeat the institutional header on continuation pages</label>
+        <p class="hint">Long letters flow onto extra A4 pages automatically. The footer is repeated on every page.</p>
+      </div>
+    </details>
+
+    <details open>
+      <summary>Signature and stamp</summary>
+      <div class="sec">
+        <label class="chk"><input type="checkbox" data-k="sigOn"> <strong>Enable signature section</strong></label>
+        <div class="field">
+          <label for="f-sigplace">Position</label>
+          <select id="f-sigplace" data-k="sigPlace">
+            <option value="after">Right after the last paragraph (two-line gap)</option>
+            <option value="bottom">Bottom of the last page</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="field"><label for="f-sigabove">Gap above signature: <span id="o-sigabove"></span> lines</label><input type="range" id="f-sigabove" data-k="sigAbove" min="0" max="8" step="0.5"></div>
+          <div class="field"><label for="f-sigbelow">Gap below signature (to footer): <span id="o-sigbelow"></span> lines</label><input type="range" id="f-sigbelow" data-k="sigBelow" min="0" max="8" step="0.5"></div>
+        </div>
+        <div class="chk-grid">
+          <label class="chk"><input type="checkbox" data-k="stampOn"> Stamp / seal area</label>
+          <label class="chk"><input type="checkbox" data-k="nameOn"> Show names</label>
+          <label class="chk"><input type="checkbox" data-k="desigOn"> Show designations</label>
+        </div>
+        <div class="slot">
+          <label class="chk"><input type="checkbox" data-k="sigLOn"> <strong>Left signature</strong></label>
+          <div class="row">
+            <div class="field"><label for="f-lname">Name (optional)</label><input type="text" id="f-lname" data-k="sigLName" placeholder="Name"></div>
+            <div class="field"><label for="f-ldesig">Designation</label><input type="text" id="f-ldesig" data-k="sigLDesig" placeholder="Designation"></div>
+          </div>
+        </div>
+        <div class="slot">
+          <label class="chk"><input type="checkbox" data-k="sigCOn"> <strong>Centre signature</strong></label>
+          <div class="row">
+            <div class="field"><label for="f-cname">Name (optional)</label><input type="text" id="f-cname" data-k="sigCName" placeholder="Name"></div>
+            <div class="field"><label for="f-cdesig">Designation</label><input type="text" id="f-cdesig" data-k="sigCDesig" placeholder="Designation"></div>
+          </div>
+        </div>
+        <div class="slot">
+          <label class="chk"><input type="checkbox" data-k="sigROn"> <strong>Right signature</strong></label>
+          <div class="row">
+            <div class="field"><label for="f-rsname">Name (optional)</label><input type="text" id="f-rsname" data-k="sigRName" placeholder="Name"></div>
+            <div class="field"><label for="f-rsdesig">Designation</label><input type="text" id="f-rsdesig" data-k="sigRDesig" placeholder="Designation"></div>
+          </div>
+        </div>
+        <p class="hint">Each signature has blank space above it for signing. With the section off, all its space is removed. The dashed stamp guide shows on screen only.</p>
+      </div>
+    </details>
+
+    <details open>
+      <summary>Watermark (emblem)</summary>
+      <div class="sec">
+        <label class="chk"><input type="checkbox" data-k="wmOn"> Show emblem watermark in the centre of every page</label>
+        <div class="field"><label for="f-wmsize">Size: <span id="o-wmsize"></span></label><input type="range" id="f-wmsize" data-k="wmSize" min="40" max="170" step="2"></div>
+        <div class="field"><label for="f-wmop">Transparency (visibility): <span id="o-wmop"></span></label><input type="range" id="f-wmop" data-k="wmOpacity" min="2" max="40" step="1"></div>
+        <div class="field"><label for="f-wmy">Vertical position: <span id="o-wmy"></span></label><input type="range" id="f-wmy" data-k="wmY" min="-60" max="60" step="1"></div>
+        <p class="hint">Lower the visibility for a lighter mark. Body text stays black and readable on top of it.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Links: logo and font</summary>
+      <div class="sec">
+        <div class="field">
+          <label for="f-logourl">Logo image link (direct URL, or a file name beside this page)</label>
+          <input type="text" id="f-logourl" data-k="logoUrl" placeholder="https://example.com/Gacnlogo.jpg" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="f-fonturl">Font stylesheet link (direct URL)</label>
+          <input type="text" id="f-fonturl" data-k="fontUrl" placeholder="https://fonts.googleapis.com/css?family=Tinos" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="f-fontname">Font family name</label>
+          <input type="text" id="f-fontname" data-k="fontName" placeholder="Tinos" autocomplete="off">
+        </div>
+        <p class="warnbox warn" id="logo-warn" hidden>The logo could not be loaded from this link. Check the address, or put Gacnlogo.jpg in the same folder as this page.</p>
+        <p class="hint">Short links work too, as long as they open straight to the image or the font stylesheet. Links need an internet connection. If the font link fails, a standard serif font is used.</p>
+      </div>
+    </details>
+
+    <details>
+      <summary>Colour theme</summary>
+      <div class="sec">
+        <div class="presets" id="presets"></div>
+        <div class="row">
+          <div class="field"><label for="c-header">Header rules</label><input type="color" id="c-header" data-k="c_header"></div>
+          <div class="field"><label for="c-footer">Footer rule</label><input type="color" id="c-footer" data-k="c_footer"></div>
+          <div class="field"><label for="c-main">Header text (main)</label><input type="color" id="c-main" data-k="c_main"></div>
+          <div class="field"><label for="c-secondary">Secondary decorative</label><input type="color" id="c-secondary" data-k="c_secondary"></div>
+          <div class="field"><label for="c-gold">Gold accent</label><input type="color" id="c-gold" data-k="c_gold"></div>
+          <div class="field"><label for="c-heading">Letter heading</label><input type="color" id="c-heading" data-k="c_heading"></div>
+          <div class="field"><label for="c-foottext">Footer text</label><input type="color" id="c-foottext" data-k="c_foottext"></div>
+        </div>
+        <p class="contrast" id="contrast" hidden></p>
+        <p class="hint">Body text always stays black and the emblem is never recoloured.</p>
+        <div><button type="button" id="btn-reset-colours">Reset colours</button></div>
+      </div>
+    </details>
+  </aside>
+
+  <main class="preview-wrap" id="wrap">
+    <div id="scaler"><div id="pages"></div></div>
+  </main>
+</div>
+
+<script src="letter.js"></script>
+</body>
+</html>
